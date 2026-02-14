@@ -45,11 +45,9 @@ class NoteTaker(BotPlugin):
         if not notes:
             return "No notes found."
         
-        response = f"Found {len(notes)} note(s):
-"
+        response = f"Found {len(notes)} note(s):\n"
         for i, title in enumerate(notes, 1):
-            response += f"{i}. {title}
-"
+            response += f"{i}. {title}\n"
         return response
 
     @arg_botcmd('title', type=str)
@@ -82,20 +80,15 @@ class NoteTaker(BotPlugin):
         if not note:
             return f"Note '{resolved_title}' not found."
 
-        response = f"**{note.title}**
-"
+        response = f"**{note.title}** "
         if note.origin:
-            response += f"_Origin: {note.origin}_
-"
-        response += f"_Created: {note.created_at}_
-"
+            response += f"_Origin: {note.origin}_ "
+        response += f"_Created: {note.created_at}_ "
         
         if note.tags:
-            response += f"Tags: {', '.join(note.tags)}
-"
+            response += f"Tags: {', '.join(note.tags)} "
         
-        response += "
-" + note.content
+        response += " " + note.content
         return response
 
     @arg_botcmd('query', type=str)
@@ -105,11 +98,9 @@ class NoteTaker(BotPlugin):
         if not results:
             return f"No notes found matching '{query}'."
         
-        response = f"Search results for '{query}':
-"
+        response = f"Search results for '{query}':\n"
         for i, title in enumerate(results, 1):
-            response += f"{i}. {title}
-"
+            response += f"{i}. {title}\n" 
         return response
 
     @arg_botcmd('title_or_num', type=str)
