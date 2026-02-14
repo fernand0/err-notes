@@ -7,13 +7,36 @@ class NoteTaker(BotPlugin):
     A plugin to manage your notes via Errbot.
     """
 
+    def get_configuration_template(self):
+        """
+        Configuration template for the plugin.
+        """
+        return {'STORAGE_DIR': None}
+
+    def configure(self, configuration):
+        """
+        Handles configuration changes.
+        """
+        if configuration is not None and configuration != {}:
+            config = dict(self.get_configuration_template(), **configuration)
+        else:
+            config = self.get_configuration_template()
+        super().configure(config)
+
     def activate(self):
         """
         Triggered when the plugin is activated.
         """
         super().activate()
-        self.config_manager = Config()
-        self.note_manager = NoteManager(self.config_manager.storage_dir)
+        
+        # Get storage directory from config or fallback to global config
+        storage_dir = self.config.get('STORAGE_DIR')
+        if not storage_dir:
+            global_config = Config()
+            storage_dir = global_config.storage_dir
+            
+        self.log.info(f"Initializing NoteManager with directory: {storage_dir}")
+        self.note_manager = NoteManager(storage_dir)
 
     @botcmd
     def note_list(self, msg, args):
@@ -22,9 +45,11 @@ class NoteTaker(BotPlugin):
         if not notes:
             return "No notes found."
         
-        response = f"Found {len(notes)} note(s):\n"
+        response = f"Found {len(notes)} note(s):
+"
         for i, title in enumerate(notes, 1):
-            response += f"{i}. {title}\n"
+            response += f"{i}. {title}
+"
         return response
 
     @arg_botcmd('title', type=str)
@@ -57,15 +82,20 @@ class NoteTaker(BotPlugin):
         if not note:
             return f"Note '{resolved_title}' not found."
 
-        response = f"**{note.title}**\n"
+        response = f"**{note.title}**
+"
         if note.origin:
-            response += f"_Origin: {note.origin}_\n"
-        response += f"_Created: {note.created_at}_\n"
+            response += f"_Origin: {note.origin}_
+"
+        response += f"_Created: {note.created_at}_
+"
         
         if note.tags:
-            response += f"Tags: {', '.join(note.tags)}\n"
+            response += f"Tags: {', '.join(note.tags)}
+"
         
-        response += "\n" + note.content
+        response += "
+" + note.content
         return response
 
     @arg_botcmd('query', type=str)
@@ -75,9 +105,11 @@ class NoteTaker(BotPlugin):
         if not results:
             return f"No notes found matching '{query}'."
         
-        response = f"Search results for '{query}':\n"
+        response = f"Search results for '{query}':
+"
         for i, title in enumerate(results, 1):
-            response += f"{i}. {title}\n"
+            response += f"{i}. {title}
+"
         return response
 
     @arg_botcmd('title_or_num', type=str)
