@@ -1,7 +1,6 @@
-from errbot import BotPlugin, botcmd, arg_botcmd, re_botcmd
+from errbot import BotPlugin, botcmd, arg_botcmd
 from note_app.manager import NoteManager
 from note_app.config import Config
-import re
 from datetime import datetime
 
 class NoteTaker(BotPlugin):
@@ -131,13 +130,13 @@ class NoteTaker(BotPlugin):
             pass
         return input_str
 
-    @re_botcmd(pattern=r'^!note\s+(?P<content>.+)$')
-    def note_default_create(self, msg, match):
+    @botcmd(hidden=True)
+    def note(self, msg, args):
         """
-        Creates a new note from arbitrary text following '!note '
-        if no other explicit command matches.
+        Creates a new note from arbitrary text following the command prefix + 'note'.
+        This acts as a catch-all if no other explicit command matches.
         """
-        content = match.group('content').strip()
+        content = args.strip()
 
         if not content:
             return "Please provide some content for your note."
@@ -162,7 +161,7 @@ class NoteTaker(BotPlugin):
         success = self.note_manager.create_note(
             title=title,
             content=content,
-            tags=["errbot"], # Optionally add an "errbot" tag
+            tags=["errbot"],
             origin=origin
         )
 
@@ -170,3 +169,4 @@ class NoteTaker(BotPlugin):
             return f"Note '{title}' created successfully from Errbot."
         else:
             return f"Failed to create note '{title}'. It might already exist."
+
