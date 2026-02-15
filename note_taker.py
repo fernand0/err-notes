@@ -1,6 +1,8 @@
-from errbot import BotPlugin, botcmd, arg_botcmd
+from errbot import BotPlugin, botcmd, arg_botcmd, re_botcmd
 from note_app.manager import NoteManager
 from note_app.config import Config
+import re
+from datetime import datetime
 
 class NoteTaker(BotPlugin):
     """
@@ -128,3 +130,43 @@ class NoteTaker(BotPlugin):
         except ValueError:
             pass
         return input_str
+
+    @re_botcmd(pattern=r'^!note\s+(?P<content>.+)$')
+    def note_default_create(self, msg, match):
+        """
+        Creates a new note from arbitrary text following '!note '
+        if no other explicit command matches.
+        """
+        content = match.group('content').strip()
+
+        if not content:
+            return "Please provide some content for your note."
+
+        # Generate a title from the content, similar to cli.py
+        words = content.split()
+        if len(words) > 5:
+            base_title = " ".join(words[:5])
+        else:
+            base_title = content
+
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        
+        max_title_len = 100
+        if len(base_title) > max_title_len - len(timestamp) - 1:
+            base_title = base_title[:max_title_len - len(timestamp) - 1 - 3] + "..."
+        
+        title = f"{base_title}_{timestamp}"
+
+        origin = f"Errbot ({self._bot.mode})"
+
+        success = self.note_manager.create_note(
+            title=title,
+            content=content,
+            tags=["errbot"], # Optionally add an "errbot" tag
+            origin=origin
+        )
+
+        if success:
+            return f"Note '{title}' created successfully from Errbot."
+        else:
+            return f"Failed to create note '{title}'. It might already exist."
