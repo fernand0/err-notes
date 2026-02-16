@@ -76,7 +76,7 @@ class NoteTaker(BotPlugin):
     @arg_botcmd('--tags', type=str, nargs='*', default=[])
     def note_add(self, msg, title=None, content=None, tags=None):
         """Alias for note_create."""
-        return self.note_create(msg, title, content, tags)
+        yield self.note_create(msg, title, content, tags)
 
     @arg_botcmd('title_or_num', type=str)
     def note_read(self, msg, title_or_num=None):
@@ -102,7 +102,8 @@ class NoteTaker(BotPlugin):
     @arg_botcmd('title_or_num', type=str)
     def note_show(self, msg, title_or_num=None):
         """Alias for note_read."""
-        return self.note_read(msg, title_or_num)
+        for line in self.note_read(msg, title_or_num):
+            yield line
 
     @arg_botcmd('query', type=str)
     def note_search(self, msg, query=None):
@@ -134,7 +135,8 @@ class NoteTaker(BotPlugin):
     @arg_botcmd('title_or_num', type=str)
     def note_del(self, msg, title_or_num=None):
         """Alias for note_delete."""
-        return self.note_delete(msg, title_or_num)
+        for line in self.note_delete(msg, title_or_num):
+            yield line
 
     def _resolve_title(self, input_str):
         """Helper to resolve a title from either a string or a list index."""
