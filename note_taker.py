@@ -100,6 +100,15 @@ class NoteTaker(BotPlugin):
     @arg_botcmd('title_or_num', type=str)
     def note_read(self, msg, title_or_num=None):
         """Read a note by title or number."""
+        return self._note_read(title_or_num)
+
+    @arg_botcmd('title_or_num', type=str)
+    def note_show(self, msg, title_or_num=None):
+        """Alias for note_read."""
+        return self._note_read(title_or_num)
+
+    def _note_read(self, title_or_num):
+        """Helper to read a note."""
         # Try to resolve title if it's a number
         resolved_title = self._resolve_title(title_or_num)
         
@@ -118,12 +127,6 @@ class NoteTaker(BotPlugin):
         response += " " + note.content
         return response
 
-    @arg_botcmd('title_or_num', type=str)
-    def note_show(self, msg, title_or_num=None):
-        """Alias for note_read."""
-        for line in self.note_read(msg, title_or_num):
-            yield line
-
     @arg_botcmd('query', type=str)
     def note_search(self, msg, query=None):
         """Search across all note fields."""
@@ -139,6 +142,15 @@ class NoteTaker(BotPlugin):
     @arg_botcmd('title_or_num', type=str)
     def note_delete(self, msg, title_or_num=None):
         """Delete a note by title or number."""
+        return self._note_delete(title_or_num)
+
+    @arg_botcmd('title_or_num', type=str)
+    def note_del(self, msg, title_or_num=None):
+        """Alias for note_delete."""
+        return self._note_delete(title_or_num)
+
+    def _note_delete(self, title_or_num):
+        """Helper to delete a note."""
         resolved_title = self._resolve_title(title_or_num)
         
         # Verify it exists first
@@ -150,12 +162,6 @@ class NoteTaker(BotPlugin):
             return f"Note '{resolved_title}' deleted successfully."
         else:
             return f"Failed to delete note '{resolved_title}'."
-
-    @arg_botcmd('title_or_num', type=str)
-    def note_del(self, msg, title_or_num=None):
-        """Alias for note_delete."""
-        for line in self.note_delete(msg, title_or_num):
-            yield line
 
     def _resolve_title(self, input_str):
         """Helper to resolve a title from either a string or a list index."""
