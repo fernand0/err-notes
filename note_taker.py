@@ -71,6 +71,13 @@ class NoteTaker(BotPlugin):
         else:
             return f"Failed to create note '{title}'. It might already exist."
 
+    @arg_botcmd('title', type=str)
+    @arg_botcmd('--content', type=str, default="")
+    @arg_botcmd('--tags', type=str, nargs='*', default=[])
+    def note_add(self, msg, title=None, content=None, tags=None):
+        """Alias for note_create."""
+        return self.note_create(msg, title, content, tags)
+
     @arg_botcmd('title_or_num', type=str)
     def note_read(self, msg, title_or_num=None):
         """Read a note by title or number."""
@@ -91,6 +98,11 @@ class NoteTaker(BotPlugin):
         
         response += " " + note.content
         return response
+
+    @arg_botcmd('title_or_num', type=str)
+    def note_show(self, msg, title_or_num=None):
+        """Alias for note_read."""
+        return self.note_read(msg, title_or_num)
 
     @arg_botcmd('query', type=str)
     def note_search(self, msg, query=None):
@@ -118,6 +130,11 @@ class NoteTaker(BotPlugin):
             return f"Note '{resolved_title}' deleted successfully."
         else:
             return f"Failed to delete note '{resolved_title}'."
+
+    @arg_botcmd('title_or_num', type=str)
+    def note_del(self, msg, title_or_num=None):
+        """Alias for note_delete."""
+        return self.note_delete(msg, title_or_num)
 
     def _resolve_title(self, input_str):
         """Helper to resolve a title from either a string or a list index."""
