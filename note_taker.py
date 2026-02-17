@@ -79,7 +79,7 @@ class NoteTaker(BotPlugin):
         
         lines = args.strip().split('\n', 1)
         title = lines[0].strip()
-        content = lines[1] if len(lines) > 1 else ""#.strip() if len(lines) > 1 else ""
+        content = lines[1].strip() if len(lines) > 1 else ""
         
         if not title:
             return "Note must have a title (first line)."
