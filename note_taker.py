@@ -76,11 +76,11 @@ class NoteTaker(BotPlugin):
         """Create a note taking the first line as title and the rest as content."""
         if not args:
             return "Please provide content. The first line will be the title, and the rest the content."
-        
+
         lines = args.strip().split('\n', 1)
         title = lines[0].strip()
         content = lines[1].strip() if len(lines) > 1 else ""
-        
+
         if not title:
             return "Note must have a title (first line)."
 
@@ -91,7 +91,7 @@ class NoteTaker(BotPlugin):
             tags=[],
             origin=origin
         )
-        
+
         if success:
             return f"Note '{title}' created successfully."
         else:
