@@ -52,8 +52,8 @@ class NoteTaker(BotPlugin):
         return response
 
     @arg_botcmd('title', type=str)
-    @arg_botcmd('--content', type=str, default="")
-    @arg_botcmd('--tags', type=str, nargs='*', default=[])
+    @arg_botcmd('-c', '--content', type=str, default="")
+    @arg_botcmd('-t', '--tags', type=str, nargs='*', default=[])
     def note_create(self, msg, title=None, content=None, tags=None):
         """Create a new note."""
         # Detect origin from the message source (e.g., Telegram, Slack, etc.)
@@ -79,7 +79,7 @@ class NoteTaker(BotPlugin):
         
         lines = args.strip().split('\n', 1)
         title = lines[0].strip()
-        content = lines[1].strip() if len(lines) > 1 else ""
+        content = lines[1]#.strip() if len(lines) > 1 else ""
         
         if not title:
             return "Note must have a title (first line)."
