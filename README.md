@@ -50,6 +50,7 @@ To set a custom storage directory within Errbot:
 -   **`!note add <content>`**: Creates a note using the first line as the title and the rest as content.
 -   **`!note read <title_or_num>`**: Displays the content of a note. Supports numeric indices.
 -   **`!note show <title_or_num>`**: Alias for `!note read`.
+-   **`!note update <title_or_num> [-c content] [--add-tag tag] [--remove-tag tag] [--new-title title]`**: Updates an existing note.
 -   **`!note search <query>`**: Searches for notes matching the query across all fields.
 -   **`!note delete <title_or_num>`**: Deletes the specified note. Supports numeric indices.
 -   **`!note del <title_or_num>`**: Alias for `!note delete`.

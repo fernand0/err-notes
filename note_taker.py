@@ -154,6 +154,27 @@ class NoteTaker(BotPlugin):
         else:
             return f"Note '{title_or_num}' not found or failed to delete."
 
+    @arg_botcmd('title_or_num', type=str)
+    @arg_botcmd('-c', '--content', type=str, default=None)
+    @arg_botcmd('--add-tag', action='append', type=str, default=[])
+    @arg_botcmd('--remove-tag', action='append', type=str, default=[])
+    @arg_botcmd('--new-title', type=str, default=None)
+    def note_update(self, msg, title_or_num=None, content=None, add_tag=None, remove_tag=None, new_title=None):
+        """Update an existing note."""
+        success = self.note_manager.update_note(
+            title=title_or_num,
+            content=content,
+            add_tags=add_tag,
+            remove_tags=remove_tag,
+            new_title=new_title
+        )
+        if success:
+            if new_title:
+                return f"Note '{title_or_num}' updated and renamed to '{new_title}'."
+            return f"Note '{title_or_num}' updated successfully."
+        else:
+            return f"Failed to update note '{title_or_num}'."
+
     @arg_botcmd('title1', type=str)
     @arg_botcmd('title2', type=str)
     @arg_botcmd('--title', type=str, default=None)
