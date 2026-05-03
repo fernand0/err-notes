@@ -154,6 +154,17 @@ class NoteTaker(BotPlugin):
         else:
             return f"Note '{title_or_num}' not found or failed to delete."
 
+    @arg_botcmd('title1', type=str)
+    @arg_botcmd('title2', type=str)
+    @arg_botcmd('--title', type=str, default=None)
+    def note_join(self, msg, title1=None, title2=None, title=None):
+        """Join two notes into one."""
+        new_title = self.note_manager.join_notes(title1, title2, title)
+        if new_title:
+            return f"Notes joined successfully into '{new_title}'."
+        else:
+            return "Failed to join notes. Ensure both exist and the target title is not already taken."
+
     @botcmd(hidden=True)
     def note(self, msg, args):
         """
