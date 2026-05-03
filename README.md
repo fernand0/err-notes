@@ -38,21 +38,23 @@ To set a custom storage directory within Errbot:
 ```
 
 ## Usage
-
-All commands are prefixed with your bot's command prefix (e.g., `!`).
-
+- **Search**: Perform a universal search across all note titles and content.
+- **Hashtag Support**: Automatically extract tags from hashtags (e.g., `#work`) at the end of titles or content.
+- **Title/Index Resolution**: Use note numbers from list results instead of typing full titles.
+- **Delete Notes**: Remove notes you no longer need.
+...
 ### Commands
 
--   **`!note list`**: Lists all available notes.
--   **`!note create <title> [-c content] [-t tags...]`**: Creates a new note.
-    -   Example: `!note create "Meeting Notes" -c "Discussed the new README" -t work docs`
+-   **`!note list`**: Lists all available notes with indices.
+-   **`!note create [title] [-c content] [-t tags...]`**: Creates a new note. Title is optional; hashtags in content are automatically extracted as tags.
 -   **`!note add <content>`**: Creates a note using the first line as the title and the rest as content.
--   **`!note read <title_or_num>`**: Displays the content of a note.
+-   **`!note read <title_or_num>`**: Displays the content of a note. Supports numeric indices.
 -   **`!note show <title_or_num>`**: Alias for `!note read`.
--   **`!note search <query>`**: Searches for notes matching the query.
--   **`!note delete <title_or_num>`**: Deletes the specified note.
+-   **`!note search <query>`**: Searches for notes matching the query across all fields.
+-   **`!note delete <title_or_num>`**: Deletes the specified note. Supports numeric indices.
 -   **`!note del <title_or_num>`**: Alias for `!note delete`.
--   **`!note <content>`**: (Hidden catch-all) Quickly creates a note from the provided text, automatically generating a title with a timestamp.
+-   **`!note <content>`**: (Hidden catch-all) Quickly creates a note from the provided text, automatically generating a title and extracting hashtags.
+
 
 ## License
 
