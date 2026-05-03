@@ -109,12 +109,9 @@ class NoteTaker(BotPlugin):
 
     def _note_read(self, title_or_num):
         """Helper to read a note."""
-        # Try to resolve title if it's a number
-        resolved_title = self._resolve_title(title_or_num)
-        
-        note = self.note_manager.read_note(resolved_title)
+        note = self.note_manager.read_note(title_or_num)
         if not note:
-            return f"Note '{resolved_title}' not found."
+            return f"Note '{title_or_num}' not found."
 
         response = f"**{note.title}** "
         if note.origin:
@@ -151,28 +148,11 @@ class NoteTaker(BotPlugin):
 
     def _note_delete(self, title_or_num):
         """Helper to delete a note."""
-        resolved_title = self._resolve_title(title_or_num)
-        
-        # Verify it exists first
-        if not self.note_manager.read_note(resolved_title):
-            return f"Note '{resolved_title}' not found."
-            
-        success = self.note_manager.delete_note(resolved_title)
+        success = self.note_manager.delete_note(title_or_num)
         if success:
-            return f"Note '{resolved_title}' deleted successfully."
+            return f"Note '{title_or_num}' deleted successfully."
         else:
-            return f"Failed to delete note '{resolved_title}'."
-
-    def _resolve_title(self, input_str):
-        """Helper to resolve a title from either a string or a list index."""
-        try:
-            idx = int(input_str)
-            all_notes = self.note_manager.list_notes()
-            if 0 < idx <= len(all_notes):
-                return all_notes[idx - 1]
-        except ValueError:
-            pass
-        return input_str
+            return f"Note '{title_or_num}' not found or failed to delete."
 
     @botcmd(hidden=True)
     def note(self, msg, args):
@@ -185,32 +165,16 @@ class NoteTaker(BotPlugin):
         if not content:
             return "Please provide some content for your note."
 
-        # Generate a title from the content, similar to cli.py
-        words = content.split()
-        if len(words) > 5:
-            base_title = " ".join(words[:5])
-        else:
-            base_title = content
-
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        
-        max_title_len = 100
-        if len(base_title) > max_title_len - len(timestamp) - 1:
-            base_title = base_title[:max_title_len - len(timestamp) - 1 - 3] + "..."
-        
-        title = f"{base_title}_{timestamp}"
-
         origin = f"Errbot ({self._bot.mode})"
 
-        success = self.note_manager.create_note(
-            title=title,
+        title = self.note_manager.create_note(
             content=content,
             tags=["errbot"],
             origin=origin
         )
 
-        if success:
+        if title:
             return f"Note '{title}' created successfully from Errbot."
         else:
-            return f"Failed to create note '{title}'. It might already exist."
+            return f"Failed to create note. It might already exist."
 
