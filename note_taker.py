@@ -71,31 +71,25 @@ class NoteTaker(BotPlugin):
         else:
             return f"Failed to create note '{title}'. It might already exist."
 
-    @botcmd
-    def note_add(self, msg, args):
-        """Create a note taking the first line as title and the rest as content."""
-        if not args:
-            return "Please provide content. The first line will be the title, and the rest the content."
-
-        lines = args.strip().split('\n', 1)
-        title = lines[0].strip()
-        content = lines[1].strip() if len(lines) > 1 else ""
-
-        if not title:
-            return "Note must have a title (first line)."
-
+    @arg_botcmd('title', type=str)
+    @arg_botcmd('-c', '--content', type=str, default="")
+    @arg_botcmd('-t', '--tags', type=str, nargs='*', default=[])
+    def note_add(self, msg, title=None, content=None, tags=None):
+        """Add a new note."""
+        # Detect origin from the message source (e.g., Telegram, Slack, etc.)
         origin = f"Errbot ({self._bot.mode})"
+        
         success = self.note_manager.create_note(
-            title=title,
-            content=content,
-            tags=[],
+            title=title, 
+            content=content, 
+            tags=tags, 
             origin=origin
         )
-
+        
         if success:
-            return f"Note '{title}' created successfully."
+            return f"Note '{title}' added successfully with origin '{origin}'."
         else:
-            return f"Failed to create note '{title}'. It might already exist."
+            return f"Failed to add note '{title}'. It might already exist."
 
     @arg_botcmd('title_or_num', type=str)
     def note_read(self, msg, title_or_num=None):
