@@ -51,51 +51,10 @@ class NoteTaker(BotPlugin):
             response += f"{i}. {title}\n"
         return response
 
-    @arg_botcmd('title', type=str)
-    @arg_botcmd('-c', '--content', type=str, default="")
-    @arg_botcmd('-t', '--tags', type=str, nargs='*', default=[])
-    def note_create(self, msg, title=None, content=None, tags=None):
-        """Create a new note."""
-        # Detect origin from the message source (e.g., Telegram, Slack, etc.)
-        origin = f"Errbot ({self._bot.mode})"
-        
-        success = self.note_manager.create_note(
-            title=title, 
-            content=content, 
-            tags=tags, 
-            origin=origin
-        )
-        
-        if success:
-            return f"Note '{title}' created successfully with origin '{origin}'."
-        else:
-            return f"Failed to create note '{title}'. It might already exist."
-
     @botcmd
     def note_add(self, msg, args):
         """Create a note taking the first line as title and the rest as content."""
-        if not args:
-            return "Please provide content. The first line will be the title, and the rest the content."
-
-        lines = args.strip().split('\n', 1)
-        title = lines[0].strip()
-        content = lines[1].strip() if len(lines) > 1 else ""
-
-        if not title:
-            return "Note must have a title (first line)."
-
-        origin = f"Errbot ({self._bot.mode})"
-        success = self.note_manager.create_note(
-            title=title,
-            content=content,
-            tags=[],
-            origin=origin
-        )
-
-        if success:
-            return f"Note '{title}' created successfully."
-        else:
-            return f"Failed to create note '{title}'. It might already exist."
+        return self.note(msg, args)
 
     @arg_botcmd('title_or_num', type=str)
     def note_read(self, msg, title_or_num=None):
@@ -189,24 +148,28 @@ class NoteTaker(BotPlugin):
     @botcmd(hidden=True)
     def note(self, msg, args):
         """
-        Creates a new note from arbitrary text following the command prefix + 'note'.
+        Creates a new note taking the first line as title and the rest as content.
         This acts as a catch-all if no other explicit command matches.
         """
-        content = args.strip()
+        if not args:
+            return "Please provide content. The first line will be the title, and the rest the content."
 
-        if not content:
-            return "Please provide some content for your note."
+        lines = args.strip().split('\n', 1)
+        title = lines[0].strip()
+        content = lines[1].strip() if len(lines) > 1 else ""
+
+        if not title:
+            return "Note must have a title (first line)."
 
         origin = f"Errbot ({self._bot.mode})"
-
-        title = self.note_manager.create_note(
+        success = self.note_manager.create_note(
+            title=title,
             content=content,
-            tags=["errbot"],
+            tags=[],
             origin=origin
         )
 
-        if title:
-            return f"Note '{title}' created successfully from Errbot."
+        if success:
+            return f"Note '{title}' created successfully."
         else:
-            return f"Failed to create note. It might already exist."
-
+            return f"Failed to create note '{title}'. It might already exist."

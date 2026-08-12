@@ -46,7 +46,6 @@ To set a custom storage directory within Errbot:
 ### Commands
 
 -   **`!note list`**: Lists all available notes with indices.
--   **`!note create [title] [-c content] [-t tags...]`**: Creates a new note. Title is optional; hashtags in content are automatically extracted as tags.
 -   **`!note add <content>`**: Creates a note using the first line as the title and the rest as content.
 -   **`!note read <title_or_num>`**: Displays the content of a note. Supports numeric indices.
 -   **`!note show <title_or_num>`**: Alias for `!note read`.
@@ -54,7 +53,7 @@ To set a custom storage directory within Errbot:
 -   **`!note search <query>`**: Searches for notes matching the query across all fields.
 -   **`!note delete <title_or_num>`**: Deletes the specified note. Supports numeric indices.
 -   **`!note del <title_or_num>`**: Alias for `!note delete`.
--   **`!note <content>`**: (Hidden catch-all) Quickly creates a note from the provided text, automatically generating a title and extracting hashtags.
+-   **`!note <content>`**: (Hidden catch-all) Quickly creates a note from the provided text, using the first line as the title and the rest as content.
 
 
 ## License
